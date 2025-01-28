@@ -13,6 +13,7 @@ backgroung = pygame.image.load("galaxy.jpg")
 backgroung = pygame.transform.scale(backgroung, (600, 500))
 pygame.mixer.music.load("space.ogg")
 pygame.mixer.music.play(-1)
+exp_s = pygame.mixer.Sound("fire.ogg")
 
 class Sprite:
 
@@ -49,10 +50,14 @@ class Enemy(Sprite):
         self.image_right = self.image
     def ruh(self):
         self.rect.y += self.speed
+        if self.rect.y >= wind_h:
+            self.rect.x = randint(0,wind_w-50)
+            self.rect.y = randint(-350, -50)
 a = randint(50, 550)
 meteorit_image = pygame.image.load("asteroid.png")
-meteorit = Enemy(a, 50, 50, 50, meteorit_image, 5)
-
+enemies = []
+for i in range(5):
+    enemies.append(Enemy(randint(0,wind_w-50), randint(-250, -50), 70, 50, meteorit_image, randint(5, 10)))
 
 spaceship_image = pygame.image.load("rocket.png")
 spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
@@ -62,10 +67,16 @@ while game:
     if not finish:
         window.blit(backgroung, (0,0))
         spaceship.draw()
-        meteorit.draw()
-        meteorit.ruh()
-        spaceship.move(pygame.K_a, pygame.K_d)
+        for enemy in enemies:
 
+            enemy.draw()
+            enemy.ruh()
+
+            if spaceship.rect.colliderect(enemy.rect):
+                finish = True
+
+                pygame.mixer.Sound.play(exp_s)
+        spaceship.move(pygame.K_a, pygame.K_d)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
