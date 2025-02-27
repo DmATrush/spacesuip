@@ -11,10 +11,11 @@ clock = pygame.time.Clock()
 #задай фон сцени
 backgroung = pygame.image.load("galaxy.jpg")
 backgroung = pygame.transform.scale(backgroung, (600, 500))
-backgroung2 = pygame.image.load("menu.png")
-backgroung2 = pygame.transform.scale(backgroung2, (300, 600))
-pygame.mixer.music.load("space.ogg")
-pygame.mixer.music.play(-1)
+backgroung2 = pygame.image.load("galaxy.jpg")
+backgroung2 = pygame.transform.scale(backgroung2, (600, 600))
+backgroung3 = pygame.image.load("galaxy.jpg")
+backgroung3 = pygame.transform.scale(backgroung2, (600, 600))
+
 exp_s = pygame.mixer.Sound("fire.ogg")
 with open("if.txt.txt", "r", encoding="Utf-8") as file:
     b = int(file.read())
@@ -179,7 +180,9 @@ for i in range(3):
 button_img = pygame.image.load("start.png")   
 spaceship_image = pygame.image.load("rocket.png")
 spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
-button = Sprite(150, 350, 100, 50, button_img)
+button = Sprite(250, 350, 100, 50, button_img)
+tutorial_btn = pygame.image.load("tutor.png")
+button2 = Sprite(250, 250, 100, 50, tutorial_btn)
 
 game = True
 finish = False
@@ -191,13 +194,22 @@ f = 0
 g = False
 p = 0
 menu = True
+tutorial = False
 font_stat = pygame.font.SysFont("Arial",15)
 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+if tutorial or not menu:
+    pygame.mixer.music.load("space.ogg")
+    pygame.mixer.music.play(-1)
+else:
+    pygame.mixer.music.stop()
 while game:
     if menu:
         window.blit(backgroung2, (0, 0))
         button.draw()
-    if not finish and not menu:
+        button2.draw()
+    if tutorial:
+        window.blit(backgroung3, (0, 0))
+    if not finish and not menu and not tutorial:
         
         window.blit(backgroung, (0,0))
         spaceship.draw()
@@ -349,6 +361,11 @@ while game:
             x, y = event.pos
             if button.rect.collidepoint(x, y):
                 menu = False
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x, y = event.pos
+            if button2.rect.collidepoint(x, y):
+                menu = False
+                tutorial = True
 
     d += 1
     e += 1
