@@ -73,11 +73,13 @@ class Enemy(Sprite):
         self.image_right = self.image
         self.health = health
     def ruhe(self):
+
         self.rect.x += self.speed
         if self.rect.x >= wind_w:
             self.speed = self.speed * -1
         if self.rect.x <= 0:
             self.speed = self.speed *-1
+
     def drop(self):
         bombs.append(Bomb(self.rect.x, self.rect.y, 50, 50, bomb_im, randint(4,8), randint(1,3)))
     def spb(self):
@@ -175,8 +177,14 @@ for i in range(5):
     meteorites.append(Meteorite(randint(0,wind_w-50), randint(-250, -50), 70, 50, meteorit_image, randint(5, 10)))
 enemies = []
 enemy_image = pygame.image.load("ufo.png")
+h = None
 for i in range(3):
-    enemies.append(Enemy(0, 100, 75, 50, enemy_image, randint(2, 5),50))
+    h = randint(1,2)
+    if h == 1:
+        u = 0
+    else:
+        u = 550
+    enemies.append(Enemy(u, 100, 75, 50, enemy_image, randint(2, 5),50))
 button_img = pygame.image.load("start.png")   
 spaceship_image = pygame.image.load("rocket.png")
 spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
@@ -214,6 +222,7 @@ while game:
         window.blit(backgroung, (0,0))
         spaceship.draw()
         window.blit(points_lb, (0, 0))
+        
         for enemy in enemies:
             enemy.draw()
             enemy.ruhe()
@@ -230,7 +239,14 @@ while game:
                         p += 5
                         points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
                     else:
-                        enemy.rect.x = 0
+                        h = None
+                        
+                        h = randint(1,2)
+                        if h == 1:
+                            u = 0
+                        else:
+                            u = 550
+                        enemy.rect.x = u
                         if enemy.speed <= 0:
                             enemy.speed = enemy.speed * -1
                         enemy.health = 50
@@ -249,7 +265,14 @@ while game:
                         p += 5
                         points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
                     else:
-                        enemy.rect.x = 0
+                        h = None
+                        
+                        h = randint(1,2)
+                        if h == 1:
+                            u = 0
+                        else:
+                            u = 550
+                        enemy.rect.x = u
                         if enemy.speed <= 0:
                             enemy.speed = enemy.speed * -1
                         enemy.health = 50
@@ -304,6 +327,8 @@ while game:
             meteorite.ruh()
             if meteorite.rect.bottom >= wind_h:
                 meteoritesrain.remove(meteorite)
+            if meteorite.rect.colliderect(spaceship):
+                finish = True
             for bullet in bullets:
                 if bullet.rect.colliderect(meteorite):
                     meteoritesrain.remove(meteorite)
@@ -350,8 +375,38 @@ while game:
             spaceship.fire()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             spaceship.a_bull()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_r and finish:
             spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
+            for meteorite in meteorites:
+                meteorite.draw()
+                meteorite.ruh()
+                meteorite.rect.y = randint(-350, -50)
+            for enemy in enemies:
+                enemies.remove(enemy)
+            h = None
+            for i in range(3):
+                h = randint(1,2)
+                if h == 1:
+                    u = 0
+                else:
+                    u = 550
+                enemies.append(Enemy(u, 100, 75, 50, enemy_image, randint(2, 5),50))
+            for bomb in bombs:
+                bombs.remove(bomb)
+            for boss in boss_list:
+                boss_list.remove(boss)
+            for mis in mises:
+                mises.remove(mis)
+            for bullet in bullets:
+                bullets.remove(bullet)
+            for a_bull in a_bullets:
+                a_bullets.remove(a_bull)
+            for meteorite in meteoritesrain:
+                meteoritesrain.remove(meteorite)
+            for laser in lasers:
+                lasers.remove(laser)
+            g = False
+            p = 0
             finish = False
         if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
             if d >= 1:
@@ -369,7 +424,6 @@ while game:
 
     d += 1
     e += 1
-    print(f)
     if f >= 30 and g != True:
         enemy.spb()
         f = 0
