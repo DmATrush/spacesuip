@@ -80,10 +80,17 @@ class Enemy(Sprite):
         if self.rect.x <= 0:
             self.speed = self.speed *-1
 
+    
+
     def drop(self):
         bombs.append(Bomb(self.rect.x, self.rect.y, 50, 50, bomb_im, randint(4,8), randint(1,3)))
     def spb(self):
         boss_list.append(Boss(200, 100,300, 200, boss_img, 3000))
+class Dummy1(Sprite):
+    def __init__(self,x,y,w,h,image,health):
+        super().__init__(x,y,w,h,image)
+    def drop1(self):
+        bombs.append(Bomb(self.rect.x, self.rect.y, 50, 50, bomb_im, randint(4,8), randint(1,3)))
 bomb_im = pygame.image.load("bomb.png")
 bullets = []
 class Bulka(Sprite):
@@ -177,6 +184,7 @@ for i in range(5):
     meteorites.append(Meteorite(randint(0,wind_w-50), randint(-250, -50), 70, 50, meteorit_image, randint(5, 10)))
 enemies = []
 enemy_image = pygame.image.load("ufo.png")
+dum= Dummy1(250,250,75,50,enemy_image,50)
 h = None
 for i in range(3):
     h = randint(1,2)
@@ -205,177 +213,191 @@ menu = True
 tutorial = False
 font_stat = pygame.font.SysFont("Arial",15)
 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-if tutorial or not menu:
-    pygame.mixer.music.load("space.ogg")
-    pygame.mixer.music.play(-1)
-else:
-    pygame.mixer.music.stop()
+pygame.mixer.music.load("space.ogg")
+pygame.mixer.music.play(-1)
+    
 while game:
     if menu:
         window.blit(backgroung2, (0, 0))
         button.draw()
         button2.draw()
+
     if tutorial:
         window.blit(backgroung3, (0, 0))
-    if not finish and not menu and not tutorial:
-        
-        window.blit(backgroung, (0,0))
+        dum.draw()
         spaceship.draw()
-        window.blit(points_lb, (0, 0))
-        
-        for enemy in enemies:
-            enemy.draw()
-            enemy.ruhe()
-            if e >= 100:
-                enemy.drop()
-                e = 0
-
-            for abull in a_bullets:
-                if enemy.rect.colliderect(abull.rect):
-                    if enemy.health >= 10:
-                        enemy.health -= abull.damage
-                        a_bullets.remove(abull)
-                        pygame.mixer.Sound.play(exp_s)
-                        p += 5
-                        points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                    else:
-                        h = None
-                        
-                        h = randint(1,2)
-                        if h == 1:
-                            u = 0
-                        else:
-                            u = 550
-                        enemy.rect.x = u
-                        if enemy.speed <= 0:
-                            enemy.speed = enemy.speed * -1
-                        enemy.health = 50
-                        p += 10
-                        points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                        b += 1
-                        if g == True:
-                            pass
-                        else:
-                            f += 1
-            for mis in mises:
-                if enemy.rect.colliderect(mis.rect):
-                    if enemy.health >= 10:
-                        enemy.health -= mis.damage
-                        pygame.mixer.Sound.play(exp_s)
-                        p += 5
-                        points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                    else:
-                        h = None
-                        
-                        h = randint(1,2)
-                        if h == 1:
-                            u = 0
-                        else:
-                            u = 550
-                        enemy.rect.x = u
-                        if enemy.speed <= 0:
-                            enemy.speed = enemy.speed * -1
-                        enemy.health = 50
-                        p += 10
-                        points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                        b += 1
-                        if g == True:
-                            pass
-                        else:
-                            f += 1
-
-
-
-        for meteorite in meteorites:
-            meteorite.draw()
-            meteorite.ruh()
-            for bullet in bullets:
-                if meteorite.rect.colliderect(bullet.rect):
-                    meteorite.rect.y = randint(-350, -50)
-                    bullets.remove(bullet)
-                    pygame.mixer.Sound.play(exp_s)
-                    c += 1
-            for mis in mises:
-                if meteorite.rect.colliderect(mis.rect):
-                    meteorite.rect.y = randint(-350, -50)
-
-            if spaceship.rect.colliderect(meteorite.rect):
-                finish = True
-                pygame.mixer.Sound.play(exp_s)
-
+        spaceship.move(pygame.K_a, pygame.K_d)
         for bullet in bullets:
             bullet.draw()
             bullet.move()
         for abull in a_bullets:
             abull.draw()
             abull.movee()
-        for mis in mises:
-            mis.draw()
-            mis.perm()
-        for bomb in bombs:
-            bomb.draw()
-            bomb.mover()
-            if spaceship.rect.colliderect(bomb.rect):
-                finish = True
-        for laser in lasers:
-            laser.draw()
-            laser.moveer()
-            if laser.rect.bottom >= wind_h:
-                lasers.remove(laser)
-        for meteorite in meteoritesrain:
-            meteorite.draw()
-            meteorite.ruh()
-            if meteorite.rect.bottom >= wind_h:
-                meteoritesrain.remove(meteorite)
-            if meteorite.rect.colliderect(spaceship):
-                finish = True
-            for bullet in bullets:
-                if bullet.rect.colliderect(meteorite):
-                    meteoritesrain.remove(meteorite)
-            for mis in mises:
-                if mis.rect.colliderect(meteorite.rect):
-                    meteoritesrain.remove(meteorite)
-        for boss in boss_list:
-            boss.draw()
 
-            if boss.health >= 675 and boss.health <= 725:
-                boss.meteorite_rain()
-            if boss.health >= 475 and boss.health <= 525:
-                boss.laser_atk()
+    else:
+        pass
 
-            if boss.health <= 0:
-                p += 2000
-                points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                boss_list.remove(boss)
-                g = False
-            for mis in mises:
-                if mis.rect.colliderect(boss.rect):
-                    boss.health -= mis.bossdmg
-                    print(boss.health)
-            for enemy in enemies:
-                if f >= 30:
-                    enemy.spb()
-                    g = True
-            for bullet in bullets:
-                if bullet.rect.colliderect(boss.rect):
-                    boss.health -= bullet.boss_dmg
-                    bullets.remove(bullet)
-            for a_bull in a_bullets:
-                if a_bull.rect.colliderect(boss.rect):
-                    boss.health -= a_bull.boss_dmg
-                    a_bullets.remove(a_bull)
+
+
+        if not finish and not menu and not tutorial:
+            if game:
+                window.blit(backgroung, (0,0))
+                spaceship.draw()
+                window.blit(points_lb, (0, 0))
+            
+                for enemy in enemies:
+                    enemy.draw()
+                    enemy.ruhe()
+                    if e >= 100:
+                        enemy.drop()
+                        e = 0
+
+                    for abull in a_bullets:
+                        if enemy.rect.colliderect(abull.rect):
+                            if enemy.health >= 10:
+                                enemy.health -= abull.damage
+                                a_bullets.remove(abull)
+                                pygame.mixer.Sound.play(exp_s)
+                                p += 5
+                                points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+                            else:
+                                h = None
+                            
+                                h = randint(1,2)
+                                if h == 1:
+                                    u = 0
+                                else:
+                                    u = 550
+                                enemy.rect.x = u
+                                if enemy.speed <= 0:
+                                    enemy.speed = enemy.speed * -1
+                                enemy.health = 50
+                                p += 10
+                                points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+                                b += 1
+                                if g == True:
+                                    pass
+                                else:
+                                    f += 1
+                    for mis in mises:
+                        if enemy.rect.colliderect(mis.rect):
+                            if enemy.health >= 10:
+                                enemy.health -= mis.damage
+                                pygame.mixer.Sound.play(exp_s)
+                                p += 5
+                                points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+                            else:
+                                h = None
+                                
+                                h = randint(1,2)
+                                if h == 1:
+                                    u = 0
+                                else:
+                                    u = 550
+                                enemy.rect.x = u
+                                if enemy.speed <= 0:
+                                    enemy.speed = enemy.speed * -1
+                                enemy.health = 50
+                                p += 10
+                                points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+                                b += 1
+                                if g == True:
+                                    pass
+                                else:
+                                    f += 1
+
+
+
+                for meteorite in meteorites:
+                    meteorite.draw()
+                    meteorite.ruh()
+                    for bullet in bullets:
+                        if meteorite.rect.colliderect(bullet.rect):
+                            meteorite.rect.y = randint(-350, -50)
+                            bullets.remove(bullet)
+                            pygame.mixer.Sound.play(exp_s)
+                            c += 1
+                    for mis in mises:
+                        if meteorite.rect.colliderect(mis.rect):
+                            meteorite.rect.y = randint(-350, -50)
+
+                    if spaceship.rect.colliderect(meteorite.rect):
+                        finish = True
+                        pygame.mixer.Sound.play(exp_s)
+
+                for bullet in bullets:
+                    bullet.draw()
+                    bullet.move()
+                for abull in a_bullets:
+                    abull.draw()
+                    abull.movee()
+                for mis in mises:
+                    mis.draw()
+                    mis.perm()
+                for bomb in bombs:
+                    bomb.draw()
+                    bomb.mover()
+                    if spaceship.rect.colliderect(bomb.rect):
+                        finish = True
+                for laser in lasers:
+                    laser.draw()
+                    laser.moveer()
+                    if laser.rect.bottom >= wind_h:
+                        lasers.remove(laser)
+                for meteorite in meteoritesrain:
+                    meteorite.draw()
+                    meteorite.ruh()
+                    if meteorite.rect.bottom >= wind_h:
+                        meteoritesrain.remove(meteorite)
+                    if meteorite.rect.colliderect(spaceship):
+                        finish = True
+                    for bullet in bullets:
+                        if bullet.rect.colliderect(meteorite):
+                            meteoritesrain.remove(meteorite)
+                    for mis in mises:
+                        if mis.rect.colliderect(meteorite.rect):
+                            meteoritesrain.remove(meteorite)
+                for boss in boss_list:
+                    boss.draw()
+
+                    if boss.health >= 675 and boss.health <= 725:
+                        boss.meteorite_rain()
+                    if boss.health >= 475 and boss.health <= 525:
+                        boss.laser_atk()
+
+                    if boss.health <= 0:
+                        p += 2000
+                        points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+                        boss_list.remove(boss)
+                        g = False
+                    for mis in mises:
+                        if mis.rect.colliderect(boss.rect):
+                            boss.health -= mis.bossdmg
+                            print(boss.health)
+                    for enemy in enemies:
+                        if f >= 30:
+                            enemy.spb()
+                            g = True
+                    for bullet in bullets:
+                        if bullet.rect.colliderect(boss.rect):
+                            boss.health -= bullet.boss_dmg
+                            bullets.remove(bullet)
+                    for a_bull in a_bullets:
+                        if a_bull.rect.colliderect(boss.rect):
+                            boss.health -= a_bull.boss_dmg
+                            a_bullets.remove(a_bull)
 
                 
-        spaceship.move(pygame.K_a, pygame.K_d)
+                spaceship.move(pygame.K_a, pygame.K_d)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and tutorial or game:
             spaceship.fire()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game or tutorial:
             spaceship.a_bull()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_r and finish:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_r and game:
             spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
             for meteorite in meteorites:
                 meteorite.draw()
@@ -408,15 +430,15 @@ while game:
             g = False
             p = 0
             finish = False
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_f:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_f and game or tutorial:
             if d >= 1:
                 d = 0
                 spaceship.misly()
-        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and menu:
             x, y = event.pos
             if button.rect.collidepoint(x, y):
                 menu = False
-        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and menu:
             x, y = event.pos
             if button2.rect.collidepoint(x, y):
                 menu = False
