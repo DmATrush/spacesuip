@@ -20,6 +20,12 @@ exp_s = pygame.mixer.Sound("fire.ogg")
 with open("if.txt.txt", "r", encoding="Utf-8") as file:
     b = int(file.read())
 print(b)
+def record(b, p):
+    if b < p:
+        b = p
+        with open("if.txt.txt", "w", encoding="Utf-8") as file:
+            file.write(str(b))
+        return p
 class Sprite:
 
     def __init__(self, x, y,w ,h, image):
@@ -202,7 +208,7 @@ button2 = Sprite(250, 250, 100, 50, tutorial_btn)
 
 game = True
 finish = False
-b = 0
+#b = 0
 c = 0
 d = 0
 e = 0
@@ -274,7 +280,7 @@ while game:
                                 enemy.health = 50
                                 p += 10
                                 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                                b += 1
+                                #b += 1
                                 if g == True:
                                     pass
                                 else:
@@ -300,7 +306,7 @@ while game:
                                 enemy.health = 50
                                 p += 10
                                 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
-                                b += 1
+                                #b += 1
                                 if g == True:
                                     pass
                                 else:
@@ -393,11 +399,13 @@ while game:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game = False
-        if event.type == pygame.MOUSEBUTTONDOWN and tutorial or game:
+        if event.type == pygame.MOUSEBUTTONDOWN and (tutorial or game):
             spaceship.fire()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game or tutorial:
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and (game or tutorial):
             spaceship.a_bull()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r and game:
+            b = record(b, p)
+            f = 0
             spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
             for meteorite in meteorites:
                 meteorite.draw()
