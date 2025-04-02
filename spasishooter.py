@@ -21,11 +21,13 @@ with open("if.txt.txt", "r", encoding="Utf-8") as file:
     b = int(file.read())
 print(b)
 def record(b, p):
-    if b < p:
-        b = p
-        with open("if.txt.txt", "w", encoding="Utf-8") as file:
-            file.write(str(b))
-        return p
+    if p == None:
+        p = 0
+        if b < p:
+            b = p
+            with open("if.txt.txt", "w", encoding="Utf-8") as file:
+                file.write(str(b))
+            return p
 class Sprite:
 
     def __init__(self, x, y,w ,h, image):
@@ -401,6 +403,15 @@ while game:
             game = False
         if event.type == pygame.MOUSEBUTTONDOWN and (tutorial or game):
             spaceship.fire()
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_m and (finish or tutorial):
+            if game:
+                menu = True
+                finish = True
+            if tutorial:
+                menu = True
+                tutorial = False
+                
+
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and (game or tutorial):
             spaceship.a_bull()
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r and game:
