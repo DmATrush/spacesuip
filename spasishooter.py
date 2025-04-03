@@ -205,6 +205,10 @@ button_img = pygame.image.load("start.png")
 spaceship_image = pygame.image.load("rocket.png")
 spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
 button = Sprite(250, 350, 100, 50, button_img)
+btn1 = pygame.image.load("back.png")
+button1 = Sprite(550, 0, 50, 50, btn1)
+butn_img = pygame.image.load("options.png")
+button3 = Sprite(250, 150, 75, 50, butn_img)
 tutorial_btn = pygame.image.load("tutor.png")
 button2 = Sprite(250, 250, 100, 50, tutorial_btn)
 
@@ -229,10 +233,13 @@ while game:
         window.blit(backgroung2, (0, 0))
         button.draw()
         button2.draw()
+        button3.draw()
+        
 
     if tutorial:
         window.blit(backgroung3, (0, 0))
         dum.draw()
+        button1.draw()
         spaceship.draw()
         spaceship.move(pygame.K_a, pygame.K_d)
         for bullet in bullets:
@@ -252,6 +259,7 @@ while game:
                 window.blit(backgroung, (0,0))
                 spaceship.draw()
                 window.blit(points_lb, (0, 0))
+                button1.draw()
             
                 for enemy in enemies:
                     enemy.draw()
@@ -403,13 +411,6 @@ while game:
             game = False
         if event.type == pygame.MOUSEBUTTONDOWN and (tutorial or game):
             spaceship.fire()
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_m and (finish or tutorial):
-            if game:
-                menu = True
-                finish = True
-            if tutorial:
-                menu = True
-                tutorial = False
                 
 
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and (game or tutorial):
@@ -453,15 +454,23 @@ while game:
             if d >= 1:
                 d = 0
                 spaceship.misly()
-        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and menu:
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             if button.rect.collidepoint(x, y):
                 menu = False
-        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and menu:
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             if button2.rect.collidepoint(x, y):
                 menu = False
                 tutorial = True
+        if not menu and (tutorial or finish) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x, y = event.pos
+            if button1.rect.collidepoint(x,y):
+                    if tutorial:
+                        tutorial = False
+                        menu = True
+                    if finish:
+                        menu = True
 
     d += 1
     e += 1
