@@ -1,5 +1,6 @@
 import pygame
 from random import randint
+from time import sleep
 FPS = 60
 pygame.init()
 
@@ -40,14 +41,26 @@ class Sprite:
 
     def draw(self):
         window.blit(self.image, (self.rect.x, self.rect.y))
+img2 = pygame.image.load("rocket_fire.png")
 
+j = 0
 class Player(Sprite):
-    def __init__(self, x, y,w ,h, image, speed):
+    def __init__(self, x, y,w ,h, image, speed, img2):
         self.speed = speed
+        self.j = 0
+        self.image1 = pygame.transform.scale(image, (w,h))
+        self.image2 = pygame.transform.scale(img2, (w,h))
         super().__init__(x, y, w, h, image)
 
     def draw(self):
+        if self.j <20:
+            self.image = self.image2
+            self.j +=1
+        elif self.j == 20:
+            self.image = self.image1
+            self.j +=1
         window.blit(self.image, (self.rect.x, self.rect.y))
+
 
     def move(self, a, d):
 
@@ -59,12 +72,34 @@ class Player(Sprite):
             if self.rect.left > 0:
                 self.rect.x -= self.speed
     def fire(self):
-        
+        self.j = 0
         bullets.append(Bulka(self.rect.centerx, self.rect.y, 25, 50, bullet_png, 10, 10))
+        #self.image = self.image2
+        #for i in range(50):
+            #if self.j >= 50:
+                #self.image = self.image1
+                #self.j = 0
+            #else:
+                #self.j += 1
+        
     def a_bull(self):
         a_bullets.append(A_Bull(self.rect.centerx, self.rect.y,25,50, a_bull_png, 10, 10, 25))
+        #self.image = self.image2
+        #for i in range(50):
+            #if self.j >= 50:
+                #self.image = self.image1
+                #self.j = 0
+            #else:
+                #self.j += 1
     def misly(self):
         mises.append(Misle(self.rect.centerx, self.rect.y, 50, 100,mis_png, 35, 50, 5))
+        #self.image = self.image2
+        #for i in range(50):
+            #if self.j >= 50:
+                #self.image = self.image1
+                #self.j = 0
+            #else:
+                #self.j += 1
 a_bull_png = pygame.image.load("anti_en.png")
 class Meteorite(Sprite):
     def __init__(self, x , y , w , h , image , speed):
@@ -205,7 +240,7 @@ for i in range(3):
     enemies.append(Enemy(u, 100, 75, 50, enemy_image, randint(2, 5),50))
 button_img = pygame.image.load("start.png")   
 spaceship_image = pygame.image.load("rocket.png")
-spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
+spaceship = Player(300, 450, 50, 50, spaceship_image, 5, img2)
 button = Sprite(250, 350, 100, 50, button_img)
 btn1 = pygame.image.load("back.png")
 button1 = Sprite(550, 0, 50, 50, btn1)
@@ -213,6 +248,10 @@ butn_img = pygame.image.load("options.png")
 button3 = Sprite(250, 150, 75, 50, butn_img)
 tutorial_btn = pygame.image.load("tutor.png")
 button2 = Sprite(250, 250, 100, 50, tutorial_btn)
+button_img4 = pygame.image.load("plus.png")
+button_img5 = pygame.image.load("minus.png")
+button4 = Sprite(200 ,50,50,50, button_img4)
+button5 = Sprite(300,50,50,50,button_img5)
 
 game = True
 finish = True
@@ -227,8 +266,11 @@ menu = True
 tutorial = False
 font_stat = pygame.font.SysFont("Arial",15)
 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
+o = 100
+sound_scale = font_stat.render(f"Сила звуку: ", o, True, (255,255,255))
 pygame.mixer.music.load("space.ogg")
 pygame.mixer.music.play(-1)
+
 options = False
 while game:
     if menu:
@@ -239,6 +281,9 @@ while game:
     if options:
         window.blit(backgroung4, (0,0))
         button1.draw()
+        button4.draw()
+        button5.draw()
+        sound_scale = font_stat.render(f"Сила звуку: ", o, True, (255,255,255)), 100, 100
     if tutorial:
         window.blit(backgroung3, (0, 0))
         dum.draw()
@@ -421,7 +466,7 @@ while game:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_r and game:
             b = record(b, p)
             f = 0
-            spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
+            spaceship = Player(300, 450, 50, 50, spaceship_image, 5, img2)
             for meteorite in meteorites:
                 meteorite.draw()
                 meteorite.ruh()
@@ -463,7 +508,7 @@ while game:
                 menu = False
                 b = record(b, p)
                 f = 0
-                spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
+                spaceship = Player(300, 450, 50, 50, spaceship_image, 5, img2)
                 for meteorite in meteorites:
                     meteorite.draw()
                     meteorite.ruh()
