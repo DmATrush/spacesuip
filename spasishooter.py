@@ -12,9 +12,11 @@ clock = pygame.time.Clock()
 backgroung = pygame.image.load("galaxy.jpg")
 backgroung = pygame.transform.scale(backgroung, (600, 500))
 backgroung2 = pygame.image.load("galaxy.jpg")
-backgroung2 = pygame.transform.scale(backgroung2, (600, 600))
+backgroung2 = pygame.transform.scale(backgroung2, (600, 500))
 backgroung3 = pygame.image.load("galaxy.jpg")
-backgroung3 = pygame.transform.scale(backgroung2, (600, 600))
+backgroung3 = pygame.transform.scale(backgroung3, (600, 500))
+backgroung4 = pygame.image.load("galaxy.jpg")
+
 
 exp_s = pygame.mixer.Sound("fire.ogg")
 with open("if.txt.txt", "r", encoding="Utf-8") as file:
@@ -213,7 +215,7 @@ tutorial_btn = pygame.image.load("tutor.png")
 button2 = Sprite(250, 250, 100, 50, tutorial_btn)
 
 game = True
-finish = False
+finish = True
 #b = 0
 c = 0
 d = 0
@@ -227,15 +229,16 @@ font_stat = pygame.font.SysFont("Arial",15)
 points_lb = font_stat.render(f"очок: {p}",True,(255,255,255))
 pygame.mixer.music.load("space.ogg")
 pygame.mixer.music.play(-1)
-    
+options = False
 while game:
     if menu:
         window.blit(backgroung2, (0, 0))
         button.draw()
         button2.draw()
         button3.draw()
-        
-
+    if options:
+        window.blit(backgroung4, (0,0))
+        button1.draw()
     if tutorial:
         window.blit(backgroung3, (0, 0))
         dum.draw()
@@ -458,12 +461,46 @@ while game:
             x, y = event.pos
             if button.rect.collidepoint(x, y):
                 menu = False
+                b = record(b, p)
+                f = 0
+                spaceship = Player(300, 450, 50, 50, spaceship_image, 5)
+                for meteorite in meteorites:
+                    meteorite.draw()
+                    meteorite.ruh()
+                    meteorite.rect.y = randint(-350, -50)
+                for enemy in enemies:
+                    enemies.remove(enemy)
+                h = None
+                for i in range(3):
+                    h = randint(1,2)
+                    if h == 1:
+                        u = 0
+                    else:
+                        u = 550
+                    enemies.append(Enemy(u, 100, 75, 50, enemy_image, randint(2, 5),50))
+                for bomb in bombs:
+                    bombs.remove(bomb)
+                for boss in boss_list:
+                    boss_list.remove(boss)
+                for mis in mises:
+                    mises.remove(mis)
+                for bullet in bullets:
+                    bullets.remove(bullet)
+                for a_bull in a_bullets:
+                    a_bullets.remove(a_bull)
+                for meteorite in meteoritesrain:
+                    meteoritesrain.remove(meteorite)
+                for laser in lasers:
+                    lasers.remove(laser)
+                g = False
+                p = 0
+                finish = False
         if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             if button2.rect.collidepoint(x, y):
                 menu = False
                 tutorial = True
-        if not menu and (tutorial or finish) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+        if not menu and (tutorial or finish or options) and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
             x, y = event.pos
             if button1.rect.collidepoint(x,y):
                     if tutorial:
@@ -471,6 +508,14 @@ while game:
                         menu = True
                     if finish:
                         menu = True
+                    if options:
+                        options = False
+                        menu = True
+        if menu and event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            x,y = event.pos
+            if button3.rect.collidepoint(x,y):
+                options = True
+                menu = False
 
     d += 1
     e += 1
