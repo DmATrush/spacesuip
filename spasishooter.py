@@ -132,10 +132,17 @@ class Enemy(Sprite):
     def spb(self):
         boss_list.append(Boss(200, 100,300, 200, boss_img, 3000))
 class Dummy1(Sprite):
-    def __init__(self,x,y,w,h,image,health):
+    def __init__(self,x,y,w,h,image,health, speed):
         super().__init__(x,y,w,h,image)
+        self.speed = speed
     def drop1(self):
         bombs.append(Bomb(self.rect.x, self.rect.y, 50, 50, bomb_im, randint(4,8), randint(1,3)))
+    def ruheee(self):
+        self.rect.x += self.speed
+        if self.rect.x >= wind_w:
+            self.speed = self.speed * -1
+        if self.rect.x <= 0:
+            self.speed = self.speed *-1
 bomb_im = pygame.image.load("bomb.png")
 bullets = []
 class Bulka(Sprite):
@@ -229,7 +236,7 @@ for i in range(5):
     meteorites.append(Meteorite(randint(0,wind_w-50), randint(-250, -50), 70, 50, meteorit_image, randint(5, 10)))
 enemies = []
 enemy_image = pygame.image.load("ufo.png")
-dum= Dummy1(250,250,75,50,enemy_image,50)
+dum= Dummy1(250,250,75,50,enemy_image,50, 3)
 h = None
 for i in range(3):
     h = randint(1,2)
@@ -290,6 +297,7 @@ while game:
         button1.draw()
         spaceship.draw()
         spaceship.move(pygame.K_a, pygame.K_d)
+        dum.ruheee()
         for bullet in bullets:
             bullet.draw()
             bullet.move()
